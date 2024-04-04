@@ -28,7 +28,8 @@ namespace Datum.Blog.API.Data.Repository
 
         public Post GetPostByUsuarioId(string id, string usuarioId)
         {
-            return dbSet.Where(x=>x.UsuarioId.Equals(Guid.Parse(id)) && x.PostId.Equals(Guid.Parse(id))).FirstOrDefault();
+            return dbSet.Where(x=>x.UsuarioId.Equals(Guid.Parse(usuarioId)) 
+                               && x.PostId.Equals(Guid.Parse(id))).FirstOrDefault();
         }
 
         public double Count()

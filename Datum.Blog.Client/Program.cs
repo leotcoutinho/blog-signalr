@@ -1,37 +1,37 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿
+using Datum.Blog.Client;
+using System.Text;
 
-const string url = "http://localhost:5119/bloghub";
+var HubConnectionTask = HubClient.GetHubConnection();
+var GetPostsTask = GetPostsAsync();
 
-await using var hubConnection = new HubConnectionBuilder()
-                                  .WithUrl(url)
-                                  .WithAutomaticReconnect()
-                                  .Build();
+await Task.WhenAll(HubConnectionTask, GetPostsTask).ConfigureAwait(false);
 
-try
+async Task GetPostsAsync()
 {
-    hubConnection.On<string>("ReceiveMessage", message =>
-   {
-       Console.WriteLine(message);
-   });
+    string apiUrl = "http://localhost:5119/api/posts/getAll";
 
-    Console.WriteLine("Aguardando conexão do servidor do blog...");
+    using var httpClient = new HttpClient();
 
-    Console.WriteLine("================================");
-
-    if (hubConnection != null)
+    try
     {
-        await hubConnection.StartAsync();
+        HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
 
-        Console.WriteLine("conectado no blog!");
-        Console.WriteLine("===========");
+        if (response.IsSuccessStatusCode)
+        {
+            string json = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine($"{json}");
+           
+        }
+        else
+        {
+            Console.WriteLine($"Erro ao fazer a solicitação. Status: {response.StatusCode}");
+        }
     }
-
-    // buscar os posts do blog e listar aqui
-    Console.WriteLine();
-    Console.ReadLine();
-
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro ao fazer a solicitação: {ex.Message}");
+    }
 }
-catch (Exception)
-{
-    throw;
-}
+

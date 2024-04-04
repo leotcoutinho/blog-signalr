@@ -50,20 +50,28 @@ namespace Datum.Blog.API.Controllers
         {
             try
             {
-                var post = uow.PostRepository.GetAll().OrderBy(x=>x.DataCadastro);
+                var posts = uow.PostRepository.GetAll();               
 
-                if (post == null)
+                if (posts == null)
                 {
                     return NotFound(new { Message = "Nenhum post doi encontrado." });
                 }
 
-                return Ok(post);
+                var filteredPosts = from post in posts
+                                    select new
+                                    {
+                                        post.Usuario.Nome,
+                                        post.Comentario,
+                                        post.DataCadastro
+                                    };
+
+                return Ok(filteredPosts);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
-        }       
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post(PostModel model)
@@ -75,9 +83,9 @@ namespace Datum.Blog.API.Controllers
 
                 if (model == null)
                 {
-                    return NoContent();
+                    return BadRequest(new { Message = "As informações não são válidas." });
                 }
-                                
+
                 var post = new Post(Guid.NewGuid(),
                                     Guid.Parse(idUsuarioLogado),
                                     model.Comentario,
@@ -85,10 +93,8 @@ namespace Datum.Blog.API.Controllers
 
                 uow.PostRepository.Add(post);
 
-                var formattedMessage = $"{nome} - {model.Comentario}";
-
                 // envio pro websocket
-                await hubContext.Clients.All.SendAsync("ReceiveMessage", formattedMessage);
+                await hubContext.Clients.All.SendAsync("ReceiveMessage", $"{nome} : {model.Comentario}");
 
                 return Ok(new { Message = "Cadastrado com sucesso!" });
             }
@@ -104,6 +110,11 @@ namespace Datum.Blog.API.Controllers
             try
             {
                 idUsuarioLogado = User.FindFirst("id").Value;
+
+                if(model == null)
+                {
+                    return BadRequest(new { Message = "As informações não são válidas." });
+                }
 
                 var post = uow.PostRepository.GetPostByUsuarioId(model.Id, idUsuarioLogado);
 
@@ -132,11 +143,16 @@ namespace Datum.Blog.API.Controllers
             {
                 idUsuarioLogado = User.FindFirst("id").Value;
 
+                if(id == null)
+                {
+                    return BadRequest(new { Message = "O id deve ser informado corretamente!" });
+                }
+
                 var post = uow.PostRepository.GetPostByUsuarioId(id, idUsuarioLogado);
 
                 if (post == null)
                 {
-                    return NotFound(new { Message = $"O post com id = {idUsuarioLogado} não foi encontrado." });
+                    return NotFound(new { Message = $"O post com id = {id} não foi encontrado." });
                 }
 
                 uow.PostRepository.Remove(post);
