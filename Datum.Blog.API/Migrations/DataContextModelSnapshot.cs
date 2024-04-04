@@ -17,7 +17,7 @@ namespace Datum.Blog.API.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.17");
 
-            modelBuilder.Entity("Datum.Blog.API.Entities.Post", b =>
+            modelBuilder.Entity("Datum.Blog.API.Data.Entities.Post", b =>
                 {
                     b.Property<Guid>("PostId")
                         .HasColumnType("TEXT");
@@ -44,7 +44,7 @@ namespace Datum.Blog.API.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("Datum.Blog.API.Entities.Usuario", b =>
+            modelBuilder.Entity("Datum.Blog.API.Data.Entities.Usuario", b =>
                 {
                     b.Property<Guid>("UsuarioId")
                         .ValueGeneratedOnAdd()
@@ -73,9 +73,9 @@ namespace Datum.Blog.API.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("Datum.Blog.API.Entities.Post", b =>
+            modelBuilder.Entity("Datum.Blog.API.Data.Entities.Post", b =>
                 {
-                    b.HasOne("Datum.Blog.API.Entities.Usuario", "Usuario")
+                    b.HasOne("Datum.Blog.API.Data.Entities.Usuario", "Usuario")
                         .WithMany("Posts")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -84,7 +84,7 @@ namespace Datum.Blog.API.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Datum.Blog.API.Entities.Usuario", b =>
+            modelBuilder.Entity("Datum.Blog.API.Data.Entities.Usuario", b =>
                 {
                     b.Navigation("Posts");
                 });
