@@ -23,23 +23,6 @@ namespace Datum.Blog.API.Controllers
             this.uow = uow;
         }
 
-        [HttpPost("testeHub")]
-        public async Task<IActionResult> Post(string message)
-        {
-            try
-            {
-                var formattedMessage = $"{User.FindFirst("nome").Value} - {message}";
-
-                await hubContext.Clients.All.SendAsync("ReceiveMessage", formattedMessage);
-
-                return Ok();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         [HttpGet("getAllByUser")]
         public IActionResult GetByUser()
         {

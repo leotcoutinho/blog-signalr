@@ -14,13 +14,22 @@ try
        Console.WriteLine(message);
    });
 
-    await hubConnection.StartAsync();
+    Console.WriteLine("Aguardando conexão do servidor do blog...");
 
-    Console.WriteLine("conectado ao servidor do blog");
     Console.WriteLine("================================");
+
+    if (hubConnection != null)
+    {
+        await hubConnection.StartAsync();
+
+        Console.WriteLine("conectado no blog!");
+        Console.WriteLine("===========");
+    }
+
     // buscar os posts do blog e listar aqui
     Console.WriteLine();
     Console.ReadLine();
+
 }
 catch (Exception)
 {

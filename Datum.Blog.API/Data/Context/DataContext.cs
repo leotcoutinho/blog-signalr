@@ -28,7 +28,6 @@ namespace Datum.Blog.API.Repository.Context
             });
             modelBuilder.Entity<Post>(entity =>
             {
-                entity.HasIndex(x => x.UsuarioId).IsUnique();
                 entity.HasIndex(x => x.PostId).IsUnique();
             });
         }
