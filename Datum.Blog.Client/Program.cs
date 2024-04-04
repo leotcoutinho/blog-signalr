@@ -1,6 +1,10 @@
 ﻿
 using Datum.Blog.Client;
-using System.Text;
+using Newtonsoft.Json;
+
+Console.WriteLine("===========================");
+Console.WriteLine("=====Bem Vindo ao Blog=====");
+Console.WriteLine("===========================");
 
 var HubConnectionTask = HubClient.GetHubConnection();
 var GetPostsTask = GetPostsAsync();
@@ -21,8 +25,16 @@ async Task GetPostsAsync()
         {
             string json = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine($"{json}");
-           
+            var listaPosts = JsonConvert.DeserializeObject<List<Post>>(json);
+
+            if (listaPosts != null)
+            {
+                foreach (Post post in listaPosts.ToList().OrderBy(x => x.DataCadastro))
+                {
+                    Console.WriteLine($"{post.Nome.ToUpper()} : {post.Comentario}");
+                    Console.WriteLine("--------------------------------------------------------");
+                }
+            }
         }
         else
         {

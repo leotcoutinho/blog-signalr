@@ -24,9 +24,8 @@ namespace Datum.Blog.Client
                 {
                     await hubConnection.StartAsync();
 
-                    Console.WriteLine("conectado no hub!");
                     Console.WriteLine("===========================");
-                    Console.WriteLine("=====Bem Vindo ao Blog=====");
+                    Console.WriteLine("    conectado no hub!"); 
                     Console.WriteLine("===========================");
                 }
 

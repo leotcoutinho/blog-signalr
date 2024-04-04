@@ -93,8 +93,10 @@ namespace Datum.Blog.API.Controllers
 
                 uow.PostRepository.Add(post);
 
+                string finalMessage = $"{nome.ToUpper()} : {model.Comentario} \n--------------------------------------------------------";
+
                 // envio pro websocket
-                await hubContext.Clients.All.SendAsync("ReceiveMessage", $"{nome} : {model.Comentario}");
+                await hubContext.Clients.All.SendAsync("ReceiveMessage", finalMessage);
 
                 return Ok(new { Message = "Cadastrado com sucesso!" });
             }
