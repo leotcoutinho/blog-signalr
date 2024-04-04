@@ -25,5 +25,10 @@ namespace Datum.Blog.API.Data.Repository
         {
             return dbSet.FirstOrDefault(x => x.Email.Equals(email) && x.Senha.Equals(senha));
         }
+
+        public bool IsUser(string email)
+        {
+            return dbSet.Any(x => x.Email.Equals(email));
+        }
     }
 }

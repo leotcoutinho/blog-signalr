@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Datum.Blog.API", "Datum.Blog.API\Datum.Blog.API.csproj", "{3DCB3E1E-F8B8-43BD-8055-5D9DC5EE5FB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Datum.Blog.Api", "Datum.Blog.API\Datum.Blog.Api.csproj", "{3DCB3E1E-F8B8-43BD-8055-5D9DC5EE5FB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Datum.Blog.Client", "Datum.Blog.Client\Datum.Blog.Client.csproj", "{30BEAE84-E202-4C73-8BF4-A987DCF0BF0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Datum.Blog.Client", "Datum.Blog.Client\Datum.Blog.Client.csproj", "{30BEAE84-E202-4C73-8BF4-A987DCF0BF0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

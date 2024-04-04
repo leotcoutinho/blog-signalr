@@ -83,19 +83,20 @@ namespace Datum.Blog.API.Controllers
 
                 if (model == null)
                 {
-                    return BadRequest(new { Message = "As informações não são válidas." });
+                    return BadRequest(new { Message = "Preencha corretamente os campos" });
                 }
 
                 var post = new Post(Guid.NewGuid(),
-                                    Guid.Parse(idUsuarioLogado),
-                                    model.Comentario,
+                                    Guid.Parse(idUsuarioLogado), 
+                                    model.Comentario.Length <= 200 ? model.Comentario 
+                                                                   : throw new Exception("O comentário não pode ultrapassar 200 caracteres."),
                                     DateTime.Now);
 
                 uow.PostRepository.Add(post);
 
                 string finalMessage = $"{nome.ToUpper()} : {model.Comentario} \n--------------------------------------------------------";
 
-                // envio pro websocket
+                // envio pro websocket uma notificação
                 await hubContext.Clients.All.SendAsync("ReceiveMessage", finalMessage);
 
                 return Ok(new { Message = "Cadastrado com sucesso!" });
@@ -115,7 +116,7 @@ namespace Datum.Blog.API.Controllers
 
                 if(model == null)
                 {
-                    return BadRequest(new { Message = "As informações não são válidas." });
+                    return BadRequest(new { Message = "Preencha corretamente os campos." });
                 }
 
                 var post = uow.PostRepository.GetPostByUsuarioId(model.Id, idUsuarioLogado);

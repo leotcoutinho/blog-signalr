@@ -17,13 +17,18 @@ namespace Datum.Blog.API.Controllers
         {
             this.uow = uow;
             this.config = config;
-        }      
-               
+        }
+
         [HttpPost("login")]
         public IActionResult Post(string email, string password)
         {
             try
             {
+                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+                {
+                    return BadRequest(new { Message = "Favor informar as credenciais corretamente." });
+                }
+
                 var usuario = uow.UsuarioRepository.GetUser(email, password);
 
                 if (usuario == null)
@@ -49,7 +54,23 @@ namespace Datum.Blog.API.Controllers
         {
             try
             {
-                var usuario = new Usuario(Guid.NewGuid(), model.Nome, model.Email, model.Password);
+                if(model == null)
+                {
+                    return BadRequest(new { Message = "Informe os dados corretamente!"});
+                }
+
+                var isRegistered = uow.UsuarioRepository.IsUser(model.Email.ToLower());
+
+                if (isRegistered)
+                {
+                    return BadRequest(new { Message = "Este usuário já existe com esse email." });
+                }
+
+                var usuario = new Usuario(Guid.NewGuid(), 
+                                          model.Nome, 
+                                          model.Email.ToLower(), 
+                                          model.Password.Length <= 6 ? model.Password 
+                                                                     : throw new Exception("O password deve conter no máximo 6 caracteres") );
                 uow.UsuarioRepository.Add(usuario);
 
                 return Ok(new { Message = "Cadastrado com sucesso!" });
@@ -58,6 +79,6 @@ namespace Datum.Blog.API.Controllers
             {
                 return StatusCode(500, new { e.Message });
             }
-        }        
+        }
     }
 }

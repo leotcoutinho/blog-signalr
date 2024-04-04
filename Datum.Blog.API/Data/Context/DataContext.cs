@@ -25,6 +25,7 @@ namespace Datum.Blog.API.Repository.Context
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.HasIndex(x => x.UsuarioId).IsUnique();
+                entity.HasIndex(x => x.Email).IsUnique();
             });
             modelBuilder.Entity<Post>(entity =>
             {

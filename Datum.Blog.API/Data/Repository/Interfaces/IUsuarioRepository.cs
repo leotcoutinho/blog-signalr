@@ -8,5 +8,6 @@ namespace Datum.Blog.API.Repository.Interfaces
         IQueryable<Usuario> GetAll();
         Usuario GetByUsuarioId(string id);
         Usuario GetUser(string email, string senha);
+        bool IsUser(string email);
     }
 }
