@@ -62,7 +62,8 @@ namespace Datum.Blog.API.Configurations
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new ("id", user.UsuarioId.ToString()),
-                    new ("email", user.Email.ToString())
+                    new ("email", user.Email.ToLower().ToString()),
+                    new ("nome", user.Nome.ToLower().ToString())
                 }),
                 Expires =  DateTime.UtcNow.AddMinutes(int.Parse(configuration.GetSection("JwtSettings:ExpireTimeMinutes").Value)),
                 SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)

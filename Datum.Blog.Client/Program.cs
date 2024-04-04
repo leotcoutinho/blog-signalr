@@ -18,6 +18,7 @@ try
 
     Console.WriteLine("conectado ao servidor do blog");
     Console.WriteLine("================================");
+    // buscar os posts do blog e listar aqui
     Console.WriteLine();
     Console.ReadLine();
 }

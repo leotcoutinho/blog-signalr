@@ -1,6 +1,6 @@
 ﻿using Datum.Blog.API.Configurations;
-using Datum.Blog.API.Data.Repository.Interfaces;
 using Datum.Blog.API.Data.Entities;
+using Datum.Blog.API.Data.Repository.Interfaces;
 using Datum.Blog.API.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,22 +18,7 @@ namespace Datum.Blog.API.Controllers
             this.uow = uow;
             this.config = config;
         }      
-
-        [HttpGet("get-all")]
-        public IActionResult Get()
-        {
-            try
-            {
-                var usuarios = uow.UsuarioRepository.GetAll().ToList();
-
-                return Ok(usuarios);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
+               
         [HttpPost("login")]
         public IActionResult Post(string email, string password)
         {
@@ -50,11 +35,7 @@ namespace Datum.Blog.API.Controllers
 
                 usuario.Senha = string.Empty;
 
-                return Ok(new
-                {
-                    usuario,
-                    token
-                });
+                return Ok(new { Token = token });
             }
             catch (Exception e)
             {

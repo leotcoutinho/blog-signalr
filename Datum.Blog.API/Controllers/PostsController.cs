@@ -15,6 +15,7 @@ namespace Datum.Blog.API.Controllers
     {
         private readonly IUnitOfWork uow;
         private readonly IHubContext<BlogHub> hubContext;
+        private string idUsuarioLogado;
 
         public PostsController(IUnitOfWork uow, IHubContext<BlogHub> hubContext)
         {
@@ -22,12 +23,12 @@ namespace Datum.Blog.API.Controllers
             this.uow = uow;
         }
 
-        [HttpPost("testeHub"), AllowAnonymous]
-        public async Task<IActionResult> Post(string user, string message)
+        [HttpPost("testeHub")]
+        public async Task<IActionResult> Post(string message)
         {
             try
             {
-                var formattedMessage = $"{user} - {message}";                               
+                var formattedMessage = $"{User.FindFirst("nome").Value} - {message}";
 
                 await hubContext.Clients.All.SendAsync("ReceiveMessage", formattedMessage);
 
@@ -39,15 +40,16 @@ namespace Datum.Blog.API.Controllers
             }
         }
 
-
-        [HttpGet("{usuarioId}")]
-        public IActionResult Get(string usuarioId)
+        [HttpGet("getAllByUser")]
+        public IActionResult GetByUser()
         {
             try
             {
-                var posts = uow.PostRepository.GetByUsuarioId(usuarioId);
+                idUsuarioLogado = User.FindFirst("id").Value;
 
-                if (posts == null || posts?.Count() == 0)
+                var posts = uow.PostRepository.GetByUsuarioId(idUsuarioLogado);
+
+                if (posts == null)
                 {
                     return NotFound(new { Message = "Nenhum post desse usuário foi encontrado." });
                 }
@@ -65,7 +67,7 @@ namespace Datum.Blog.API.Controllers
         {
             try
             {
-                var post = uow.PostRepository.GetAll();
+                var post = uow.PostRepository.GetAll().OrderBy(x=>x.DataCadastro);
 
                 if (post == null)
                 {
@@ -78,28 +80,32 @@ namespace Datum.Blog.API.Controllers
             {
                 return StatusCode(500, e.Message);
             }
-        }
+        }       
 
         [HttpPost]
-        public async Task<IActionResult> Post(PostModel model, IHubContext<BlogHub> context)
+        public async Task<IActionResult> Post(PostModel model)
         {
             try
             {
+                idUsuarioLogado = User.FindFirst("id").Value;
+                string nome = User.FindFirst("nome").Value;
+
                 if (model == null)
                 {
                     return NoContent();
                 }
-
+                                
                 var post = new Post(Guid.NewGuid(),
-                                    Guid.Parse(model.UsuarioId),
+                                    Guid.Parse(idUsuarioLogado),
                                     model.Comentario,
                                     DateTime.Now);
 
                 uow.PostRepository.Add(post);
 
-                var usuario = uow.UsuarioRepository.GetByUsuarioId(model.UsuarioId);
+                var formattedMessage = $"{nome} - {model.Comentario}";
 
-                await context.Clients.All.SendAsync("", usuario.Nome, model.Comentario);
+                // envio pro websocket
+                await hubContext.Clients.All.SendAsync("ReceiveMessage", formattedMessage);
 
                 return Ok(new { Message = "Cadastrado com sucesso!" });
             }
@@ -114,11 +120,13 @@ namespace Datum.Blog.API.Controllers
         {
             try
             {
-                var post = uow.PostRepository.GetPostByUsuarioId(model.Id, model.UsuarioId);
+                idUsuarioLogado = User.FindFirst("id").Value;
+
+                var post = uow.PostRepository.GetPostByUsuarioId(model.Id, idUsuarioLogado);
 
                 if (post == null)
                 {
-                    return NotFound(new { Message = $"O post com id = {model.Id} não foi encontrado." });
+                    return NotFound(new { Message = $"O post com id = {idUsuarioLogado} não foi encontrado." });
                 }
 
                 post.Comentario = model.Comentario;
@@ -135,16 +143,17 @@ namespace Datum.Blog.API.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(PostDeleteModel model)
+        public IActionResult Delete(string id)
         {
-
             try
             {
-                var post = uow.PostRepository.GetPostByUsuarioId(model.Id, model.UsuarioId);
+                idUsuarioLogado = User.FindFirst("id").Value;
+
+                var post = uow.PostRepository.GetPostByUsuarioId(id, idUsuarioLogado);
 
                 if (post == null)
                 {
-                    return NotFound(new { Message = $"O post com id = {model.Id} não foi encontrado." });
+                    return NotFound(new { Message = $"O post com id = {idUsuarioLogado} não foi encontrado." });
                 }
 
                 uow.PostRepository.Remove(post);
