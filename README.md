@@ -11,7 +11,7 @@
 
 ## Cenário
 
-A ideia do projeto é promover um sistema de um blog onde os usuários possam se cadastrar, autenticar (login) e fazer postagens no blog.
+A ideia do projeto é simular um sistema de um blog onde os usuários possam se cadastrar, autenticar (login) e fazer postagens no blog.
 Este blog pode ser acessado por qualquer cliente que não seja cadastrado no blog, desta forma ele poderá observar as postagens enviadas pelos usuários de forma simultânea (Real-time).
 O Usuário logado pode gerenciar suas postagens criando novas, atualizando existentes dele e excluir as que ele criou.
 Esta aplicação foi criada em uma Solution com dois projetos, sendo um projeto web API Rest para prover serviços do gerenciamento dos posts feito pelo usuário, e servir como hub para o websocket atualizar as notificações de postagens para o cliente. 
