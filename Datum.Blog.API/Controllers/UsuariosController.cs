@@ -3,6 +3,7 @@ using Datum.Blog.API.Data.Entities;
 using Datum.Blog.API.Data.Repository.Interfaces;
 using Datum.Blog.API.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace Datum.Blog.API.Controllers
 {
@@ -59,11 +60,20 @@ namespace Datum.Blog.API.Controllers
                     return BadRequest(new { Message = "Informe os dados corretamente!"});
                 }
 
+                string regex = @"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$";
+                
+                bool emailValido = Regex.IsMatch(model.Email, regex, RegexOptions.IgnoreCase);
+
+                if (!emailValido)
+                {
+                    return BadRequest(new { Message = "E-mail informado incorretamente." });
+                }
+
                 var isRegistered = uow.UsuarioRepository.IsUser(model.Email.ToLower());
 
                 if (isRegistered)
                 {
-                    return BadRequest(new { Message = "Este usuário já existe com esse email." });
+                    return BadRequest(new { Message = "Já existe esse email cadastrado." });
                 }
 
                 var usuario = new Usuario(Guid.NewGuid(), 
