@@ -1,5 +1,3 @@
-# Autor: Leonardo Cesar Thebald Coutinho
-
 ## Tecnologias
 
 - Linguagem C# e .Net 7
@@ -17,7 +15,7 @@ O Usuário logado pode gerenciar suas postagens criando novas, atualizando exist
 Esta aplicação foi criada em uma Solution com dois projetos, sendo um projeto web API Rest para prover serviços do gerenciamento dos posts feito pelo usuário, e servir como hub para o websocket atualizar as notificações de postagens para o cliente. 
 O outro projeto é um Console Application para servir de client-side para ter as mensagens sendo impressas no "Blog". Foram utilizadas tecnologias atuais do .Net e boas práticas como SOLID, Clean Code, Autenticação JWT para a API e WebSocket para fazer a comunicação server x client.
 
-## Uso
+## Como Usar
 
 - Após executar o projeto em modo desenvolvimento (localhost), irá abrir o browser com o Swagger expondo os endpoints;
 - O visitante pode se tornar usuário se registrando no endpoint /register;
